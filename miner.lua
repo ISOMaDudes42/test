@@ -109,7 +109,7 @@ rednet.open(rednetSide)
 parallel.waitForAny(
   function()
     while true do
-      rednet.broadcast("StartMining", channel)
+      rednet.broadcast("StartMining", tostring(channel))
       os.sleep(1)  -- Wait for a short duration to avoid flooding the network
     end
   end,
