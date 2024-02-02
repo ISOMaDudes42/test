@@ -25,6 +25,28 @@ local function placeTorchBelow()
   end
 end
 
+local function returnAndDropItems()
+  print("Returning to the chest and dropping all items...")
+
+  -- Return to the chest
+  for _ = 1, 31 do
+    turtle.turnLeft()
+    turtle.digUp()
+    turtle.dig()
+    moveForwardWithCheck()
+  end
+
+  turtle.turnLeft()
+
+  -- Drop all items into the chest below
+  for slot = 1, 16 do
+    turtle.select(slot)
+    turtle.dropDown()
+  end
+
+  print("All items dropped to the chest. Ready for the next mining adventure.")
+end
+
 local function mineChunk()
   local chunkWidth = 10 -- Adjust the chunk width (assuming standard Minecraft chunk size)
   local chunkLength = 10 -- Adjust the chunk length
@@ -89,28 +111,6 @@ local function synchronizeTurtles()
       break
     end
   end
-end
-
-local function returnAndDropItems()
-  print("Returning to the chest and dropping all items...")
-
-  -- Return to the chest
-  for _ = 1, 31 do
-    turtle.turnLeft()
-    turtle.digUp()
-    turtle.dig()
-    moveForwardWithCheck()
-  end
-
-  turtle.turnLeft()
-
-  -- Drop all items into the chest below
-  for slot = 1, 16 do
-    turtle.select(slot)
-    turtle.dropDown()
-  end
-
-  print("All items dropped to the chest. Ready for the next mining adventure.")
 end
 
 -- Main program
