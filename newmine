@@ -35,7 +35,6 @@ local function mineChunk()
       -- Clear a layer
       turtle.dig()
       moveForwardWithCheck()
-      turtle.digDown()
       turtle.digUp()
 
       -- Place torch below every 10 blocks
@@ -60,14 +59,12 @@ local function mineChunk()
     if z < chunkLength then
       if z % 2 == 0 then
         turtle.turnRight()
-        turtle.digDown()
         turtle.digUp()
         turtle.dig()
         moveForwardWithCheck()
         turtle.turnRight()
       else
         turtle.turnLeft()
-        turtle.digDown()
         turtle.digUp()
         turtle.dig()
         moveForwardWithCheck()
@@ -100,7 +97,6 @@ local function returnAndDropItems()
   -- Return to the chest
   for _ = 1, 31 do
     turtle.turnLeft()
-    turtle.digDown()
     turtle.digUp()
     turtle.dig()
     moveForwardWithCheck()
