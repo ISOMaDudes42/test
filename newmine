@@ -63,11 +63,13 @@ local function mineChunk()
       -- Check if inventory is full after each block
       if turtle.getItemCount() == 16 then
         returnAndDropItems()
+        print("inventory full")
       end
     end
     
     if turtle.getItemCount() == 16 then
       returnAndDropItems()
+        print("inventory full")
     end
 
     -- Move to the next row
@@ -95,7 +97,7 @@ local function synchronizeTurtles()
 
     if message == "StartMining" then
       mineChunk()
-      rednet.send(senderID, "MiningComplete", channel)
+      rednet.send(senderID, "MiningComplete", tostring(channel))
     elseif message == "StopMining" then
       print("Mining operation stopped.")
       break
