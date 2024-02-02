@@ -2,6 +2,7 @@ local rednetSide = "left" -- Adjust based on the side where the wireless modem i
 local channel = 69 -- Choose a channel number for communication
 local torchSlot = 16 -- Assuming torches are in the last slot
 local chestSide = "bottom" -- Adjust based on the side where the chest is located
+local totalItemCount = 0
 
 local function isTurtleInFront()
   local success, data = turtle.inspect()
@@ -47,7 +48,10 @@ end
 local function getTotalItemCount()
   local totalItemCount = 0
   for slot = 1, 16 do
-    totalItemCount = totalItemCount + turtle.getItemCount(slot)
+    local itemCount = turtle.getItemCount(slot)
+    if itemCount then
+      totalItemCount = totalItemCount + itemCount
+    end
   end
   return totalItemCount
 end
