@@ -27,38 +27,43 @@ local function placeTorchLeft()
   end
 end
 
+local function returnAndDropItems()
+  print("Dropping all items and continuing mining...")
+
+  -- Dig down and place a chest
+  turtle.digDown()
+  turtle.placeDown("minecraft:chest")
+
+  -- Drop all items into the chest below
+  for slot = 1, 16 do
+    turtle.select(slot)
+    turtle.dropDown()
+  end
+
   -- Move forward to continue mining
   moveForwardWithCheck()
 end
 
 local function mineChunk()
-  local chunkWidth = 32 -- Adjust the chunk width (assuming standard Minecraft chunk size)
-  local chunkLength = 32 -- Adjust the chunk length
-  local inventoryFull = false
+  local chunkWidth = 10 -- Adjust the chunk width (assuming standard Minecraft chunk size)
+  local chunkLength = 10 -- Adjust the chunk length
 
   for z = 1, chunkLength do
     for x = 1, chunkWidth do
       -- Clear a layer
       turtle.dig()
-      turtle.digUp()
       moveForwardWithCheck()
+      turtle.digUp()
 
-      -- Place torch below every 10 blocks
+      -- Place torch to the left every 10 blocks
       if x % 10 == 0 then
         placeTorchLeft()
-        -- Move forward again to avoid digging the torch
-        moveForwardWithCheck()
       end
 
-      -- Check if inventory is full
+      -- Check if inventory is full after each block
       if turtle.getItemCount() == 16 then
-        inventoryFull = true
-        break
+        returnAndDropItems()
       end
-    end
-
-    if inventoryFull then
-      break
     end
 
     -- Move to the next row
@@ -78,9 +83,6 @@ local function mineChunk()
       end
     end
   end
-
-  -- Return to the starting position and drop all items into the chest
-  returnAndDropItems()
 end
 
 local function synchronizeTurtles()
