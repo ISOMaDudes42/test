@@ -47,10 +47,12 @@ end
 
 local function getTotalItemCount()
   local totalItemCount = 0
+  print("Checking inventory")
   for slot = 1, 16 do
     local itemCount = turtle.getItemCount(slot)
     if itemCount then
       totalItemCount = totalItemCount + itemCount
+      print(totalItemCount)
     end
   end
   return totalItemCount
@@ -73,13 +75,13 @@ local function mineChunk()
       end
 
       -- Check if inventory is full after each block
-      if turtle.getTotalItemCount() == 16 then
+      if getTotalItemCount() == 16 then
         returnAndDropItems()
         print("inventory full")
       end
     end
     
-    if turtle.getTotalItemCount() == 16 then
+    if getTotalItemCount() == 16 then
       returnAndDropItems()
         print("inventory full")
     end
@@ -102,20 +104,22 @@ local function mineChunk()
     end
   end
 end
-
 local function synchronizeTurtles()
-  while true do
+  local miningComplete = false
+
+  while not miningComplete do
     local senderID, message, distance = rednet.receive(channel)
 
     if message == "StartMining" then
       mineChunk()
       rednet.send(senderID, "MiningComplete", tostring(channel))
     elseif message == "StopMining" then
+      miningComplete = true
       print("Mining operation stopped.")
-      break
     end
   end
 end
+
 
 -- Main program
 rednet.open(rednetSide)
