@@ -16,52 +16,36 @@ local function moveForwardWithCheck()
   turtle.forward()
 end
 
-local function placeTorchBelow()
+local function placeTorchLeft()
   if turtle.getItemCount(torchSlot) > 0 then
     turtle.select(torchSlot)
-    turtle.placeDown()
+    turtle.turnLeft() -- Face left before placing torch
+    turtle.place()
+    turtle.turnRight() -- Face back to the original direction
   else
     print("No torches available in the inventory!")
   end
 end
 
-local function returnAndDropItems()
-  print("Returning to the chest and dropping all items...")
-
-  -- Return to the chest
-  for _ = 1, 31 do
-    turtle.turnLeft()
-    turtle.digUp()
-    turtle.dig()
-    moveForwardWithCheck()
-  end
-
-  turtle.turnLeft()
-
-  -- Drop all items into the chest below
-  for slot = 1, 16 do
-    turtle.select(slot)
-    turtle.dropDown()
-  end
-
-  print("All items dropped to the chest. Ready for the next mining adventure.")
+  -- Move forward to continue mining
+  moveForwardWithCheck()
 end
 
 local function mineChunk()
-  local chunkWidth = 10 -- Adjust the chunk width (assuming standard Minecraft chunk size)
-  local chunkLength = 10 -- Adjust the chunk length
+  local chunkWidth = 32 -- Adjust the chunk width (assuming standard Minecraft chunk size)
+  local chunkLength = 32 -- Adjust the chunk length
   local inventoryFull = false
 
   for z = 1, chunkLength do
     for x = 1, chunkWidth do
       -- Clear a layer
       turtle.dig()
-      moveForwardWithCheck()
       turtle.digUp()
+      moveForwardWithCheck()
 
       -- Place torch below every 10 blocks
       if x % 10 == 0 then
-        placeTorchBelow()
+        placeTorchLeft()
         -- Move forward again to avoid digging the torch
         moveForwardWithCheck()
       end
@@ -119,7 +103,7 @@ rednet.open(rednetSide)
 parallel.waitForAny(
   function()
     while true do
-      rednet.broadcast("StartMining", tostring(channel)
+      rednet.broadcast("StartMining", tostring(channel))
       os.sleep(1)  -- Wait for a short duration to avoid flooding the network
     end
   end,
