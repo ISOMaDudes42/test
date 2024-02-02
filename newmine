@@ -65,6 +65,10 @@ local function mineChunk()
         returnAndDropItems()
       end
     end
+    
+    if turtle.getItemCount() == 16 then
+      returnAndDropItems()
+    end
 
     -- Move to the next row
     if z < chunkLength then
