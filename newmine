@@ -16,6 +16,15 @@ local function moveForwardWithCheck()
   turtle.forward()
 end
 
+local function placeTorchBelow()
+  if turtle.getItemCount(torchSlot) > 0 then
+    turtle.select(torchSlot)
+    turtle.placeDown()
+  else
+    print("No torches available in the inventory!")
+  end
+end
+
 local function mineChunk()
   local chunkWidth = 10 -- Adjust the chunk width (assuming standard Minecraft chunk size)
   local chunkLength = 10 -- Adjust the chunk length
@@ -25,9 +34,9 @@ local function mineChunk()
     for x = 1, chunkWidth do
       -- Clear a layer
       turtle.dig()
+      moveForwardWithCheck()
       turtle.digDown()
       turtle.digUp()
-      moveForwardWithCheck()
 
       -- Place torch below every 10 blocks
       if x % 10 == 0 then
@@ -85,15 +94,6 @@ local function synchronizeTurtles()
   end
 end
 
-local function placeTorchBelow()
-  if turtle.getItemCount(torchSlot) > 0 then
-    turtle.select(torchSlot)
-    turtle.placeDown()
-  else
-    print("No torches available in the inventory!")
-  end
-end
-
 local function returnAndDropItems()
   print("Returning to the chest and dropping all items...")
 
@@ -123,7 +123,7 @@ rednet.open(rednetSide)
 parallel.waitForAny(
   function()
     while true do
-      rednet.broadcast("StartMining", channel)
+      rednet.broadcast("StartMining", tostring(channel)
       os.sleep(1)  -- Wait for a short duration to avoid flooding the network
     end
   end,
