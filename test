@@ -1,0 +1,42 @@
+-- Adjust the side where the chest is located
+local chestSide = "bottom"
+
+-- Function to move forward for a specified distance
+local function moveForward(distance)
+  for i = 1, distance do
+    turtle.dig()
+    turtle.forward()
+  end
+end
+
+-- Function to return to the starting point
+local function returnToStart()
+  turtle.turnRight()
+  turtle.turnRight()
+
+  for _ = 1, 10 do
+    turtle.forward()
+  end
+
+  turtle.turnLeft()
+  turtle.turnLeft()
+end
+
+-- Function to drop items into the chest
+local function dropItems()
+  turtle.turnLeft()
+  turtle.turnLeft()
+
+  for slot = 1, 16 do
+    turtle.select(slot)
+    turtle.drop(chestSide)
+  end
+
+  turtle.turnRight()
+  turtle.turnRight()
+end
+
+-- Main program
+moveForward(10)  -- Move forward 10 blocks
+returnToStart()  -- Return to the starting point
+dropItems()      -- Drop items into the chest
