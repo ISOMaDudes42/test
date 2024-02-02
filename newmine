@@ -44,6 +44,14 @@ local function returnAndDropItems()
   moveForwardWithCheck()
 end
 
+local function getTotalItemCount()
+  local totalItemCount = 0
+  for slot = 1, 16 do
+    totalItemCount = totalItemCount + turtle.getItemCount(slot)
+  end
+  return totalItemCount
+end
+
 local function mineChunk()
   local chunkWidth = 10 -- Adjust the chunk width (assuming standard Minecraft chunk size)
   local chunkLength = 10 -- Adjust the chunk length
@@ -61,13 +69,13 @@ local function mineChunk()
       end
 
       -- Check if inventory is full after each block
-      if turtle.getItemCount() == 16 then
+      if turtle.getTotalItemCount() == 16 then
         returnAndDropItems()
         print("inventory full")
       end
     end
     
-    if turtle.getItemCount() == 16 then
+    if turtle.getTotalItemCount() == 16 then
       returnAndDropItems()
         print("inventory full")
     end
