@@ -31,15 +31,24 @@ end
 local function returnAndDropItems()
   print("Dropping all items and continuing mining...")
 
-  -- Dig down and place a chest
+  -- Dig down
   turtle.digDown()
-  turtle.placeDown("minecraft:chest")
+
+  -- Check if there's already a chest below
+  local success, data = turtle.inspectDown()
+  if not success or data.name ~= "minecraft:chest" then
+    turtle.placeDown("minecraft:chest")
+  end
 
   -- Drop all items into the chest below
   for slot = 1, 16 do
     turtle.select(slot)
     turtle.dropDown()
   end
+
+  -- Move forward to continue mining
+  moveForwardWithCheck()
+end
 
   -- Move forward to continue mining
   moveForwardWithCheck()
