@@ -1,14 +1,21 @@
-local rednetSide = "left"
-local channel = 69
-local torchSlot = 16
-local chestSlot = 15
+local rednetSide = "left" -- Adjust based on the side where the wireless modem is attached
+local channel = 69 -- Choose a channel number for communication
+local torchSlot = 16 -- Assuming torches are in the last slot
+local chestSide = "bottom" -- Adjust based on the side where the chest is located
+local totalItemCount = 0
 
-local function turtleCheck()
-	while turtle.detect() do
-		os.sleep(5)
-	end
+local function isTurtleInFront()
+  local success, data = turtle.inspect()
+  return success and data.name == "ComputerCraft:Turtle"
 end
 
+local function moveForwardWithCheck()
+  while isTurtleInFront() do
+    -- Wait for the way to clear
+    os.sleep(1)
+  end
+  turtle.forward()
+end
 
 local function placeTorchLeft()
   if turtle.getItemCount(torchSlot) > 0 then
@@ -35,9 +42,83 @@ local function returnAndDropItems()
   end
 
   -- Move forward to continue mining
-  turtleCheck()
+  moveForwardWithCheck()
 end
 
+local function getTotalItemCount()
+  local totalItemCount = 0
+  print("Checking inventory")
+  for slot = 1, 16 do
+    local itemCount = turtle.getItemCount(slot)
+    if itemCount then
+      totalItemCount = totalItemCount + itemCount
+      print(totalItemCount)
+    end
+  end
+  return totalItemCount
+end
+
+local function mineChunk()
+  local chunkWidth = 10 -- Adjust the chunk width (assuming standard Minecraft chunk size)
+  local chunkLength = 10 -- Adjust the chunk length
+
+  for z = 1, chunkLength do
+    for x = 1, chunkWidth do
+      -- Clear a layer
+      turtle.dig()
+      moveForwardWithCheck()
+      turtle.digUp()
+
+      -- Place torch to the left every 10 blocks
+      if x % 10 == 0 then
+        placeTorchLeft()
+      end
+
+      -- Check if inventory is full after each block
+      if getTotalItemCount() == 16 then
+        returnAndDropItems()
+        print("inventory full")
+      end
+    end
+    
+    if getTotalItemCount() == 16 then
+      returnAndDropItems()
+        print("inventory full")
+    end
+
+    -- Move to the next row
+    if z < chunkLength then
+      if z % 2 == 0 then
+        turtle.turnRight()
+        turtle.digUp()
+        turtle.dig()
+        moveForwardWithCheck()
+        turtle.turnRight()
+      else
+        turtle.turnLeft()
+        turtle.digUp()
+        turtle.dig()
+        moveForwardWithCheck()
+        turtle.turnLeft()
+      end
+    end
+  end
+end
+local function synchronizeTurtles()
+  local miningComplete = false
+
+  while not miningComplete do
+    local senderID, message, distance = rednet.receive(channel)
+
+    if message == "StartMining" then
+      mineChunk()
+      rednet.send(senderID, "MiningComplete", tostring(channel))
+    elseif message == "StopMining" then
+      miningComplete = true
+      print("Mining operation stopped.")
+    end
+  end
+end
 
 
 -- Main program
