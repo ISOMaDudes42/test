@@ -38,3 +38,19 @@ local function returnAndDropItems()
   turtleCheck()
 end
 
+
+
+-- Main program
+rednet.open(rednetSide)
+
+parallel.waitForAny(
+  function()
+    while true do
+      rednet.broadcast("StartMining", tostring(channel))
+      os.sleep(1)  -- Wait for a short duration to avoid flooding the network
+    end
+  end,
+  synchronizeTurtles
+)
+
+rednet.close(rednetSide)
